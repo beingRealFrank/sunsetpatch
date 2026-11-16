@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'">
+<title>Sunsetpatch · Apple Ads Campaign Management API shuts down January 26, 2027</title>
+<meta name="description" content="Apple sunsets the Apple Ads Campaign Management API (api.searchads.apple.com/api/v5) on January 26, 2027. Free check that finds every affected call in your code, and fixed-price migrations to the Apple Ads Platform API.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script src="check.js" defer></script>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="./">Sunsetpatch</a>
+  <nav><a href="#check">Free check</a><a href="#prices">Prices</a><a href="#dates">Other deadlines</a><a href="#faq">FAQ</a></nav>
+</header>
+<main>
+<section class="wrap hero">
+  <p class="eyebrow">Apple Ads API · January 26, 2027</p>
+  <h1>Your Apple Ads integration stops working on January 26.</h1>
+  <p class="lede">Apple is sunsetting the Campaign Management API, which is every call to <code>api.searchads.apple.com/api/v5</code> (and any leftover <code>v4</code>). The replacement, the Apple Ads Platform API, uses a new host, a new context header, new resource paths and a new report format. Reporting pipelines, bid scripts, ETL connectors and dashboards all need changing.</p>
+  <p class="stat">From Apple's changelog: <em>"The Apple Ads Campaign Management API is deprecated and will be sunset on January 26, 2027. Use the Apple Ads Platform API instead."</em> (<a href="https://developer.apple.com/documentation/apple_ads/apple-search-ads-campaign-management-api-5" rel="noopener">source</a>)</p>
+  <p><a class="btn" href="#check">Check your code free</a> <a class="btn ghost" href="#prices">See fixed prices</a></p>
+</section>
+
+<section class="wrap" id="what">
+  <h2>What changes</h2>
+  <table class="dates">
+    <tr><th></th><th>Campaign Management API v5 (going away)</th><th>Apple Ads Platform API v1</th></tr>
+    <tr><td>Base URL</td><td><code>https://api.searchads.apple.com/api/v5/</code></td><td><code>https://api.ads.apple.com/v1/</code></td></tr>
+    <tr><td>Context header</td><td><code>X-AP-Context: orgId=…</code></td><td><code>X-AP-Context: adAccountId=…</code> (ad accounts are new; list them with <code>GET /v1/acls</code>)</td></tr>
+    <tr><td>Resources</td><td>Nested: <code>/campaigns/{id}/adgroups/{id}/targetingkeywords</code></td><td>Top level, filtered: <code>POST /v1/keywords/query</code> with <code>adGroupId</code></td></tr>
+    <tr><td>Search</td><td><code>POST …/find</code> with a <code>selector</code></td><td><code>POST …/query</code> with <code>filters</code>, <code>sorting</code>, <code>pagination</code></td></tr>
+    <tr><td>Reports</td><td><code>POST /reports/campaigns[/…]</code></td><td><code>POST /v1/reports/apps/{campaigns|adgroups|ads|keywords|searchterms}/query</code>, new body and new <code>result.rows[]</code> envelope</td></tr>
+    <tr><td>OAuth</td><td colspan="2">Unchanged: the same ES256 client secret, token from <code>appleid.apple.com</code>, scope <code>searchadsorg</code></td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="check">
+  <h2>Free check: find every affected call</h2>
+  <p>Pick your project folder (or some files). The check runs entirely in your browser. Nothing is uploaded. It lists each call to the old API with the file and line, plus the Platform API equivalent. It also flags the other sunsetting APIs below.</p>
+  <div class="drop">
+    <p><label>Project folder: <input type="file" id="dir" webkitdirectory directory multiple></label></p>
+    <p><label>Or files: <input type="file" id="files" multiple></label></p>
+    <p><label for="paste">Or paste code:</label></p>
+    <textarea id="paste" rows="6" placeholder='BASE = "https://api.searchads.apple.com/api/v5"'></textarea>
+    <p><button class="btn" id="go" type="button">Check pasted code</button> <button class="btn ghost" id="copy" type="button" hidden>Copy summary</button></p>
+  </div>
+  <div id="results" aria-live="polite"></div>
+  <p class="small" id="cli">Prefer a command line, or want to scan CI? The same rules ship as one Python file, standard library only: <a href="sunset_scan.py" download>sunset_scan.py</a>. Run <code>python3 sunset_scan.py path/to/repo --md report.md</code>. It sends nothing anywhere.</p>
+</section>
+
+<section class="wrap" id="prices">
+  <h2>Fixed prices: Apple Ads Platform API migration</h2>
+  <p>Send the check's summary (or the repo) and we confirm a fixed price within one business day. The size comes from the check: count the code findings and files.</p>
+  <div class="cards">
+    <div class="card">
+      <h3>Script</h3>
+      <p class="price">$290</p>
+      <ul>
+        <li>One script or small integration: up to 15 findings in up to 4 files</li>
+        <li>Host, header, paths, query bodies and report parsing moved to the Platform API</li>
+        <li>Ad account lookup via <code>/v1/acls</code> wired in</li>
+        <li>Paid on delivery</li>
+      </ul>
+    </div>
+    <div class="card feature">
+      <h3>Connector</h3>
+      <p class="price">$690</p>
+      <ul>
+        <li>An ETL tap, reporting service, bid tool or CLI: up to 60 findings in up to 15 files</li>
+        <li>Everything in Script, plus report rows remapped so downstream tables keep their columns</li>
+        <li>Tests updated with fixtures built from Apple's documented payloads</li>
+        <li>Half up front, half on delivery</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Library or platform</h3>
+      <p class="price">from $1,400</p>
+      <ul>
+        <li>SDKs, multi-tenant tools, several services</li>
+        <li>Scoped quote after the check; staged pull requests</li>
+        <li>Half up front, half on delivery</li>
+      </ul>
+    </div>
+  </div>
+  <p>Every job is delivered as a pull request (or a patch) that you review and merge. You run the final live check on your own account, so we never need your private key. Fixes for anything we changed are free until 30 days after the cutoff. If we can't do what we quoted, you don't pay. Agencies and consultancies: 25% off list for white-label work.</p>
+</section>
+
+<section class="wrap" id="dates">
+  <h2>Other API deadlines the check flags</h2>
+  <table class="dates">
+    <tr><th>API</th><th>Date</th><th>What happens</th><th>Replacement</th><th>Price</th></tr>
+    <tr><td>Google Custom Search JSON API</td><td>Jan 1, 2027</td><td>Discontinued for existing customers (<a href="https://developers.google.com/custom-search/v1/overview" rel="noopener">Google</a>)</td><td>Vertex AI Search, or another search API</td><td>$290 swap (one integration)</td></tr>
+    <tr><td>Exchange Online EWS</td><td>Apr 1, 2027</td><td>Off by default since Oct 2026, then fully disabled (<a href="https://learn.microsoft.com/exchange/clients-and-mobile-in-exchange-online/deprecation-of-ews-exchange-online" rel="noopener">Microsoft</a>)</td><td>Microsoft Graph</td><td>Scoped quote, from $890</td></tr>
+    <tr><td>HubSpot v4 / v1-v3 APIs</td><td>Mar 2027 / Sept 2027</td><td>Unsupported; marketplace apps lose certification (<a href="https://developers.hubspot.com/changelog/legacy-apis-and-legacy-apps-whats-going-unsupported-and-when" rel="noopener">HubSpot</a>)</td><td>Date-based API versions</td><td>Scoped quote</td></tr>
+    <tr><td>Keap XML-RPC</td><td>Mar 2027</td><td>Deprecated: no fixes or support (<a href="https://integration.keap.com/t/move-the-xml-rpc-sunset-to-2027/94089" rel="noopener">Keap</a>)</td><td>Keap REST v2</td><td>Scoped quote</td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="faq">
+  <h2>FAQ</h2>
+  <details><summary>Will Apple extend the date?</summary><p>Apple hasn't said it will. Its changelog gives January 26, 2027. The Platform API has been live since August 2026, so you can test against it today.</p></details>
+  <details><summary>We use a connector (Airbyte, a Singer tap, an MMP). Are we affected?</summary><p>Only if the connector still calls the old API. Run the check on its source, or ask its vendor. For self-hosted or forked connectors, the Connector package covers the update.</p></details>
+  <details><summary>Do you need our Apple Ads credentials?</summary><p>No. We work from the code and Apple's documented payloads. You run the live test. If you'd like us to run it, a read-only API user on a test account is enough, and we remove it afterwards.</p></details>
+  <details><summary>What if the check finds nothing?</summary><p>Then you're probably fine. The check matches literal hosts, paths and library names, so code that builds URLs from settings it can't see may slip through. The CLI scans config files too.</p></details>
+</section>
+
+<section class="wrap order" id="order">
+  <h2>Order or ask a question</h2>
+  <p>Email <a href="mailto:frankjgilroy@gmail.com?subject=Sunsetpatch%20quote">frankjgilroy@gmail.com</a> with the check's summary (or a link to the repo) and the package you want. We reply within one business day with a fixed price and, once you agree, a payment link.</p>
+</section>
+</main>
+<footer class="wrap foot">
+  Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19505, USA · <a href="terms.html">Terms</a><br>
+  Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates and quotes are from the vendors' own pages, checked November 16, 2026.
+</footer>
+</body>
+</html>
