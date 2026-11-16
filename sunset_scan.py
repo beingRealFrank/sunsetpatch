@@ -99,6 +99,8 @@ RULES = [
      "EWS endpoint on Exchange Online; disabled by default since Oct 2026, fully off Apr 1, 2027."),
     ("ews", "sdk", r"Microsoft\.Exchange\.WebServices|\bexchangelib\b|ews-javascript-api|ews-java-api|\bExchangeService\s*\(|microsoft\.exchange\.webservices|php-ews|jamesiarmes|garethp/php-ews|node-ews|\bviewpoint\b.*ews",
      "EWS client library; replace with Microsoft Graph SDK calls."),
+    ("ews", "usage", r"\bExchangeService\b|\bEmailMessage\b|\bItemView\b|\bFolderView\b|\bWellKnownFolderName\b|\bFindItems\b|\bSendAndSaveCopy\b|\bCalendarFolder\b|\bAppointment\.Bind\b|\bAccount\(|\bConfiguration\(|\.inbox\b|\.calendar\b|\bOAuth2Credentials\b|\bWebCredentials\b|\bExchangeCredentials\b",
+     "EWS object/call; maps to a Microsoft Graph request (see the EWS-to-Graph map)."),
     ("ews", "soap", r"schemas\.microsoft\.com/exchange/services/2006",
      "Raw EWS SOAP payload."),
     ("ews", "scope", r"EWS\.AccessAsUser\.All|full_access_as_app|outlook\.office365\.com/\.default",

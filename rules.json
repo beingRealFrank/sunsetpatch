@@ -129,6 +129,12 @@
   },
   {
    "pack": "ews",
+   "id": "usage",
+   "re": "\\bExchangeService\\b|\\bEmailMessage\\b|\\bItemView\\b|\\bFolderView\\b|\\bWellKnownFolderName\\b|\\bFindItems\\b|\\bSendAndSaveCopy\\b|\\bCalendarFolder\\b|\\bAppointment\\.Bind\\b|\\bAccount\\(|\\bConfiguration\\(|\\.inbox\\b|\\.calendar\\b|\\bOAuth2Credentials\\b|\\bWebCredentials\\b|\\bExchangeCredentials\\b",
+   "msg": "EWS object/call; maps to a Microsoft Graph request (see the EWS-to-Graph map)."
+  },
+  {
+   "pack": "ews",
    "id": "soap",
    "re": "schemas\\.microsoft\\.com/exchange/services/2006",
    "msg": "Raw EWS SOAP payload."
