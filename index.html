@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self' https://gc.zgo.at; img-src 'self' https://sendwell.goatcounter.com; connect-src 'self' https://sendwell.goatcounter.com; base-uri 'none'">
 <title>Sunsetpatch · Apple Ads Campaign Management API shuts down January 26, 2027</title>
 <meta name="description" content="Apple sunsets the Apple Ads Campaign Management API (api.searchads.apple.com/api/v5) on January 26, 2027. Free check that finds every affected call in your code, and fixed-price migrations to the Apple Ads Platform API.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 <script src="check.js" defer></script>
+<script src="gc.js"></script>
+<script data-goatcounter="https://sendwell.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <header class="wrap top">
@@ -39,7 +41,7 @@
 
 <section class="wrap" id="check">
   <h2>Free check: find every affected call</h2>
-  <p>Pick your project folder (or some files). The check runs entirely in your browser. Nothing is uploaded. It lists each call to the old API with the file and line, plus the Platform API equivalent. It also flags the other sunsetting APIs below.</p>
+  <p>Pick your project folder (or some files). The check runs entirely in your browser. Nothing is uploaded (we only count that a check ran, with a cookie-free counter, never your code). It lists each call to the old API with the file and line, plus the Platform API equivalent. It also flags the other sunsetting APIs below.</p>
   <div class="drop">
     <p><label>Project folder: <input type="file" id="dir" webkitdirectory directory multiple></label></p>
     <p><label>Or files: <input type="file" id="files" multiple></label></p>
