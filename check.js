@@ -130,7 +130,7 @@
     $("dir").addEventListener("change", function (e) { ready.then(function () { scanFiles(e.target.files); }); });
     $("files").addEventListener("change", function (e) { ready.then(function () { scanFiles(e.target.files); }); });
     var seen = 0;
-    function counted() { if (!seen && window.goatcounter && window.goatcounter.count) { seen = 1; window.goatcounter.count({path: location.host + "/event/check-run", title: "check run", event: true}); } }
+    function counted() { if (!seen && window.goatcounter && window.goatcounter.count) { seen = 1; window.goatcounter.count({path: "check-run", title: "check run", event: true}); } }
     $("dir").addEventListener("change", counted); $("files").addEventListener("change", counted); $("go").addEventListener("click", counted);
     $("go").addEventListener("click", function () {
       ready.then(function () { render(scanText("pasted", $("paste").value), 1); });
