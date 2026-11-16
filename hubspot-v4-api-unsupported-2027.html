@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; base-uri 'none'">
+<title>HubSpot v4 API unsupported from March 2027: what it means and what to migrate</title>
+<meta name="description" content="HubSpot moves v4 APIs to unsupported in March 2027 and v1-v3 in September 2027. What is a hard deadline, what is not, and how to inventory affected code.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/hubspot-v4-api-unsupported-2027.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">HubSpot API · March and September 2027</p>
+<h1>HubSpot v4 goes unsupported in March 2027: who needs to move</h1>
+
+<p>This one is a soft deadline, so here is what is and isn't true. HubSpot says: <em>"In March 2027, HubSpot v4 APIs will move to an unsupported state."</em> Unsupported versions "may continue to function for some period of time, but they are not guaranteed to remain stable or available" (<a href="https://developers.hubspot.com/changelog/deprecating-support-for-hubspot-v4-apis" rel="noopener">HubSpot changelog</a>). The v1 to v3 APIs and legacy apps go unsupported after September 2027, and marketplace apps still using them lose certification (<a href="https://developers.hubspot.com/changelog/legacy-apis-and-legacy-apps-whats-going-unsupported-and-when" rel="noopener">HubSpot changelog</a>). The recommended target is the date-based API version 2026-09.</p>
+<h2>Who should act now</h2>
+<ul>
+<li><b>Marketplace app developers.</b> Certification is the real consequence. Plan the migration before September 2027.</li>
+<li><b>Everyone else.</b> Nothing stops on a date, but "unsupported" means no fixes. Legacy private apps can no longer be created (since October 26, 2026); use service keys. HubSpot notes that not every legacy replacement path is finalized yet, so start with inventory rather than a rewrite.</li>
+</ul>
+<h2>Inventory first</h2>
+<p>Search for <code>api.hubapi.com/crm/v3</code>, <code>/crm/v4</code>, <code>/contacts/v1</code>, <code>hapikey=</code> and the <code>@hubspot/api-client</code> or <code>hubspot-api-client</code> packages. The <a href="./#check">free check</a> flags these and tells you how many files are involved.</p>
+
+<div class="stat"><p><b>Marketplace app on a legacy API?</b></p><p>Send the free check's output for a scoped quote.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19505, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; base-uri 'none'">
+<title>Apple Ads API v5 to Platform API migration guide (sunset January 26, 2027)</title>
+<meta name="description" content="Apple sunsets the Campaign Management API v5 on January 26, 2027. Endpoint-by-endpoint map to the Apple Ads Platform API v1, header changes and before/after code.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/apple-ads-api-v5-to-platform-api.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">Apple Ads API · January 26, 2027</p>
+<h1>Apple Ads API v5 to Platform API: what changes and what to edit</h1>
+
+<p>Apple's changelog says it plainly: <em>"The Apple Ads Campaign Management API is deprecated and will be sunset on January 26, 2027. Use the Apple Ads Platform API instead."</em> (<a href="https://developer.apple.com/documentation/apple_ads/apple-search-ads-campaign-management-api-5" rel="noopener">Apple's changelog</a>). Anything that calls <code>https://api.searchads.apple.com/api/v5/</code> (or a leftover <code>/api/v4/</code>) has to move to <code>https://api.ads.apple.com/v1/</code>. Version 1.0 of the Platform API has been live since August 2026, so you can test against it today.</p>
+<h2>The five changes that touch your code</h2>
+<ol>
+<li><b>Base URL.</b> <code>api.searchads.apple.com/api/v5/</code> becomes <code>api.ads.apple.com/v1/</code>.</li>
+<li><b>Context header.</b> <code>X-AP-Context: orgId=&lt;orgId&gt;</code> becomes <code>X-AP-Context: adAccountId=&lt;adAccountId&gt;</code>. Ad accounts are new: list yours with <code>GET /v1/acls</code> or <code>GET /v1/me</code>.</li>
+<li><b>Nested resources become top-level.</b> Keywords, ads and ad groups are no longer addressed through their parent's path. You query <code>/v1/keywords/query</code> with a filter such as <code>adGroupId</code>.</li>
+<li><b>Search renamed.</b> <code>find</code> with a <code>selector</code> becomes <code>query</code> with <code>filters</code>, <code>sorting</code> and <code>pagination</code> (the page size limit for reports is 5000).</li>
+<li><b>Reports have a new body and a new response.</b> See <a href="apple-ads-reports-migration.html">the reports page</a>.</li>
+</ol>
+<p><b>OAuth does not change.</b> Same ES256 client-secret JWT, same token endpoint at <code>appleid.apple.com</code>, same scope <code>searchadsorg</code>. Updates are partial: a <code>PUT</code> replaces only the fields you send, and arrays are replaced whole.</p>
+<h2>Endpoint map</h2>
+<p>The old call on the left, its Platform API replacement on the right. This is the same table the <a href="./#check">free check</a> uses to annotate your code.</p>
+<table class="dates"><tr><th>Campaign Management API v5</th><th>Apple Ads Platform API v1</th></tr><tr><td><code>POST /campaigns/find</code></td><td><code>POST /v1/campaigns/query</code></td></tr><tr><td><code>GET|PUT|DELETE /campaigns/{id}</code></td><td><code>GET|PUT|DELETE /v1/campaigns/{id}</code></td></tr><tr><td><code>POST /campaigns (create)</code></td><td><code>POST /v1/campaigns</code></td></tr><tr><td><code>GET|POST /campaigns/{c}/adgroups</code></td><td><code>POST /v1/adgroups/query (filter campaignId); POST /v1/adgroups to create</code></td></tr><tr><td><code>POST /campaigns/{c}/adgroups/find</code></td><td><code>POST /v1/adgroups/query</code></td></tr><tr><td><code>/campaigns/{c}/adgroups/{a}/targetingkeywords[/find]</code></td><td><code>POST /v1/keywords/query (filter adGroupId)</code></td></tr><tr><td><code>/…/targetingkeywords/bulk</code></td><td><code>POST /v1/keywords/bulk-create, PUT → /v1/keywords/bulk-update</code></td></tr><tr><td><code>/…/targetingkeywords/delete/bulk</code></td><td><code>POST /v1/keywords/bulk-delete</code></td></tr><tr><td><code>/campaigns/{c}/negativekeywords[/find]</code></td><td><code>POST /v1/negative-keywords/query (filter campaignId or adGroupId)</code></td></tr><tr><td><code>/campaigns/{c}/adgroups/{a}/ads[/find]</code></td><td><code>POST /v1/ads/query (filter adGroupId); POST /v1/ads to create</code></td></tr><tr><td><code>POST /reports/campaigns</code></td><td><code>POST /v1/reports/apps/campaigns/query</code></td></tr><tr><td><code>POST /reports/campaigns/{c}/adgroups</code></td><td><code>POST /v1/reports/apps/adgroups/query (filter campaignId)</code></td></tr><tr><td><code>POST /reports/campaigns/{c}/keywords</code></td><td><code>POST /v1/reports/apps/keywords/query (filter campaignId)</code></td></tr><tr><td><code>POST /reports/campaigns/{c}/searchterms</code></td><td><code>POST /v1/reports/apps/searchterms/query (filter campaignId)</code></td></tr><tr><td><code>/custom-reports (impression share)</code></td><td><code>POST /v1/insights/apps/impression-share/query</code></td></tr><tr><td><code>GET /acls, GET /me</code></td><td><code>GET /v1/acls (now also returns ad accounts), GET /v1/me</code></td></tr><tr><td><code>/search/apps, /search/geo</code></td><td><code>GET /v1/search/apps, GET|POST /v1/search/geo</code></td></tr><tr><td><code>creativesets</code></td><td><code>Removed: use creatives + ads</code></td></tr></table>
+<h2>Before and after</h2>
+<pre><code>- BASE = "https://api.searchads.apple.com/api/v5"
+- headers = {"Authorization": f"Bearer {token}", "X-AP-Context": f"orgId={ORG_ID}"}
+- r = requests.post(f"{BASE}/campaigns/{cid}/adgroups/{agid}/targetingkeywords/find", json=selector, headers=headers)
++ BASE = "https://api.ads.apple.com/v1"
++ headers = {"Authorization": f"Bearer {token}", "X-AP-Context": f"adAccountId={AD_ACCOUNT_ID}"}
++ r = requests.post(f"{BASE}/keywords/query", json=query_with_adGroupId_filter, headers=headers)</code></pre>
+<h2>How to find every call</h2>
+<p>Search your code for <code>searchads.apple.com</code>, <code>orgId</code>, <code>X-AP-Context</code> and <code>/api/v5</code>. Then check configuration files, Airflow and dbt jobs, and any no-code connector you pay for: if a tool you use still shows "Apple Search Ads v5" it needs its vendor to update. Or paste your code into the <a href="./#check">free check</a>, which runs in your browser and uploads nothing.</p>
+
+<div class="stat"><p><b>Have a script, ETL tap or dashboard on v5?</b></p><p>Fixed prices: $290 for a script, $690 for a connector, delivered as a pull request. You run the live check on your own account.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19505, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>

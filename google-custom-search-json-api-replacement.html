@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; base-uri 'none'">
+<title>Google Custom Search JSON API replacement: shutdown January 1, 2027</title>
+<meta name="description" content="Google&#x27;s Custom Search JSON API is discontinued for existing customers on January 1, 2027. How to find every call, what to replace it with, and a migration checklist.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/google-custom-search-json-api-replacement.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">Google Custom Search JSON API · January 1, 2027</p>
+<h1>Google Custom Search JSON API replacement: what to do before January 1</h1>
+
+<p>Google's own overview page says: <em>"Existing Custom Search JSON API customers have until January 1, 2027 to transition to an alternative solution."</em> (<a href="https://developers.google.com/custom-search/v1/overview" rel="noopener">Google</a>). The same page describes the end as a "service discontinuation" on that date. Google's suggested replacement is <a href="https://cloud.google.com/use-cases/site-search" rel="noopener">Vertex AI Search</a>, which supports up to 50 domains.</p>
+<h2>Do you use it?</h2>
+<p>Search your code for <code>googleapis.com/customsearch/v1</code>, a <code>cx=</code> parameter, <code>GOOGLE_CSE_ID</code> or <code>GOOGLE_API_KEY</code> next to a search call, or client libraries named <code>googleapiclient ... customsearch</code>, <code>google-api-python-client</code> with <code>cse()</code>, or <code>@googleapis/customsearch</code>. WordPress and Joomla plugins, site-search widgets, SEO and rank-tracking tools, research scrapers and LLM "web search" tools commonly depend on it. The <a href="./#check">free check</a> finds these.</p>
+<h2>Migration checklist</h2>
+<ol>
+<li><b>Inventory.</b> List every place that builds a Custom Search request, and what fields of the response you read (<code>items[].title</code>, <code>link</code>, <code>snippet</code>, <code>pagemap</code>, <code>searchInformation.totalResults</code>).</li>
+<li><b>Pick a target.</b> Vertex AI Search if you search your own sites (it needs a Google Cloud project and a data store); another web search API if you search the open web. Check pricing and quotas for each before you commit.</li>
+<li><b>Put an adapter in front.</b> One function that takes a query and returns the same result shape your code already reads. The rest of your application then never learns the provider changed.</li>
+<li><b>Handle limits.</b> Custom Search paged with <code>start</code> and <code>num</code>; your new provider will page differently.</li>
+<li><b>Ship before January 1.</b> A discontinued API usually fails abruptly rather than degrading, so test the fallback path too.</li>
+</ol>
+<p>This is the smallest of the sunsets we cover, and it is a few hours of focused work per integration, which is why the price is fixed.</p>
+
+<div class="stat"><p><b>Want it swapped for you?</b></p><p>A fixed $290 per integration: Vertex AI Search (or the search API you prefer), the same result shape for the rest of your code, and tests, delivered as a pull request.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19505, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>

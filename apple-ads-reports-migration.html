@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; base-uri 'none'">
+<title>Apple Ads reporting API migration: v5 reports to Platform API report queries</title>
+<meta name="description" content="How the Apple Ads campaign, ad group, keyword and search term reports change when v5 is sunset on January 26, 2027: new endpoints, request body and result.rows response.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/apple-ads-reports-migration.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">Apple Ads API · reports</p>
+<h1>Apple Ads reports: moving a reporting pipeline off v5</h1>
+
+<p>Reporting pipelines are where the Apple Ads migration hurts, because the report request and response both change. Reports are covered by Apple's <a href="https://developer.apple.com/documentation/apple-ads-platform-api" rel="noopener">Platform API documentation</a>; this page is the short version.</p>
+<table class="dates">
+<tr><th></th><th>v5 (going away)</th><th>Platform API v1</th></tr>
+<tr><td>Campaign report</td><td><code>POST /reports/campaigns</code></td><td><code>POST /v1/reports/apps/campaigns/query</code></td></tr>
+<tr><td>Ad group report</td><td><code>POST /reports/campaigns/{c}/adgroups</code></td><td><code>POST /v1/reports/apps/adgroups/query</code> with a <code>campaignId</code> filter</td></tr>
+<tr><td>Ad report</td><td><code>POST /reports/campaigns/{c}/ads</code></td><td><code>POST /v1/reports/apps/ads/query</code></td></tr>
+<tr><td>Keyword report</td><td><code>POST /reports/campaigns/{c}/keywords</code></td><td><code>POST /v1/reports/apps/keywords/query</code></td></tr>
+<tr><td>Search terms report</td><td><code>POST /reports/campaigns/{c}/searchterms</code></td><td><code>POST /v1/reports/apps/searchterms/query</code></td></tr>
+<tr><td>Impression share</td><td><code>/custom-reports</code></td><td><code>POST /v1/insights/apps/impression-share/query</code></td></tr>
+<tr><td>Request body</td><td>Start/end dates, <code>selector</code>, <code>groupBy</code>, <code>returnRowTotals</code></td><td><code>timeRange</code>, <code>filters</code>, <code>groupBy</code>, <code>pagination</code> (max 5000)</td></tr>
+<tr><td>Response</td><td><code>data.reportingDataResponse.row[]</code></td><td><code>result.rows[]</code> with <code>totalMetrics</code> and <code>granularMetrics</code></td></tr>
+</table>
+<h2>What to do in a pipeline</h2>
+<ol>
+<li>Change the URL and the context header (<code>adAccountId</code> replaces <code>orgId</code>).</li>
+<li>Build the new request body: the old <code>selector</code> conditions become <code>filters</code>.</li>
+<li>Write one function that flattens <code>result.rows[]</code> into the same rows your tables already expect, so nothing downstream changes.</li>
+<li>Run old and new side by side for a week of data and compare totals before January 26.</li>
+</ol>
+<p>The overall change list is on the <a href="apple-ads-api-v5-to-platform-api.html">main migration page</a>.</p>
+
+<div class="stat"><p><b>Reporting pipeline still on v5?</b></p><p>The $690 Connector package remaps report rows so downstream tables keep their columns.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19505, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>

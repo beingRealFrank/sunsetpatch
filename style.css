@@ -39,3 +39,4 @@ a{color:var(--acc)}
 .dl{font-size:13px;color:var(--muted)}
 table.dates{border-collapse:collapse;width:100%;background:#fff;font-size:15px}
 .dates th,.dates td{border:1px solid var(--line);padding:7px 9px;text-align:left}
+pre{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px;overflow:auto;font-size:13px}

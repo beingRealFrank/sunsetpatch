@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; base-uri 'none'">
+<title>Exchange Online EWS to Microsoft Graph migration: EWS disabled April 1, 2027</title>
+<meta name="description" content="Exchange Online EWS is fully and permanently disabled on April 1, 2027. Who is affected, the EWS-to-Microsoft-Graph mapping, known gaps and what to do first.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/exchange-online-ews-to-microsoft-graph.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">Exchange Online EWS · April 1, 2027</p>
+<h1>Exchange Online EWS shuts off April 1, 2027: moving to Microsoft Graph</h1>
+
+<p>Microsoft's own blog post says EWS "will be disabled by default (EWSEnabled=False) in Exchange Online tenants that have not explicitly chosen to keep it enabled", and: <em>"Starting with April 1, 2027, EWS will be fully and permanently disabled."</em> It adds that there will be no exceptions past April 2027 (<a href="https://techcommunity.microsoft.com/blog/exchange/exchange-online-ews-your-time-is-almost-up/4492361" rel="noopener">Microsoft Exchange blog</a>; <a href="https://learn.microsoft.com/exchange/clients-and-mobile-in-exchange-online/deprecation-of-ews-exchange-online" rel="noopener">deprecation notice</a>). This is about Exchange Online (Microsoft 365). Exchange Server on your own hardware is not affected.</p>
+<h2>Who is affected</h2>
+<p>Any code that reaches a Microsoft 365 mailbox, calendar or contact list over EWS: the <code>EWS Managed API</code> (<code>Microsoft.Exchange.WebServices</code>), <code>exchangelib</code> in Python, <code>ews-java-api</code>, <code>/EWS/Exchange.asmx</code> URLs, <code>ews-javascript-api</code>, RPA robots, CRM and ticketing mail connectors, and calendar sync tools. The replacement is Microsoft Graph. Microsoft publishes a mapping at <a href="https://aka.ms/ews2graphMap" rel="noopener">aka.ms/ews2graphMap</a>.</p>
+<h2>Typical mapping</h2>
+<table class="dates">
+<tr><th>EWS operation</th><th>Microsoft Graph</th></tr>
+<tr><td>FindItem / GetItem on a mail folder</td><td><code>GET /users/{id}/mailFolders/{folder}/messages</code>, <code>GET /users/{id}/messages/{id}</code></td></tr>
+<tr><td>CreateItem (send a message)</td><td><code>POST /users/{id}/sendMail</code></td></tr>
+<tr><td>CreateItem / FindItem on calendar</td><td><code>POST /users/{id}/events</code>, <code>GET /users/{id}/calendarView</code></td></tr>
+<tr><td>Contacts</td><td><code>/users/{id}/contacts</code></td></tr>
+<tr><td>Authentication</td><td>OAuth 2.0 app registration in Entra ID with Graph permissions (for example <code>Mail.ReadWrite</code>), instead of EWS credentials or an EWS-scoped token</td></tr>
+</table>
+<p>Check Microsoft's mapping for the exact operation you use. Two things to know before you plan: Graph has gaps (Microsoft says generic public-folder CRUD and Microsoft 365 group mailbox CRUD won't be added), and the access model is different, so an app that used impersonation needs its permissions redesigned. That is why this is a quote, not a flat price.</p>
+<h2>Do now</h2>
+<ol>
+<li>Find every EWS caller (the <a href="./#check">free check</a> looks for the hosts, libraries and scopes).</li>
+<li>Ask your Microsoft 365 admin whether EWS has already been switched off in your tenant. Disabled-by-default has been rolling out since October 2026.</li>
+<li>Register a Graph app, request the narrowest permissions, and rebuild one flow end to end before the rest.</li>
+</ol>
+
+<div class="stat"><p><b>Need a scoped quote?</b></p><p>Send the free check's output and we quote a fixed price, from $890, before any work starts.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19505, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>
