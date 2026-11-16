@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; base-uri 'none'">
+<title>Keap XML-RPC deprecation from March 2027: moving to REST v2</title>
+<meta name="description" content="Keap XML-RPC moves from a planned December 2026 shutdown to deprecation starting March 2027. What changed, what to move to, and how to find affected code.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/keap-xml-rpc-deprecation-2027.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">Keap XML-RPC · March 2027</p>
+<h1>Keap XML-RPC deprecation starts March 2027: moving to REST v2</h1>
+
+<p>Keap's XML-RPC API was first announced as shutting down on December 31, 2026. Keap staff on the developer forum later said that was changed: <em>"Sunset has been changed to deprecation. Deprecation begins March 2027."</em> (<a href="https://integration.keap.com/t/94089" rel="noopener">Keap developer forum</a>). I could not load Keap's own help article, so treat the exact day as unconfirmed and check it before you plan around it. This is a soft deadline: deprecation means no support, not a shutdown date.</p>
+<h2>What to move to</h2>
+<p>The replacement is the REST API v2 at <code>https://api.infusionsoft.com/crm/rest/v2/</code>. Legacy API keys were already retired in 2024-25, so authentication is a personal access token, service account key or OAuth.</p>
+<h2>Inventory first</h2>
+<p>Search for <code>infusionsoft.com/crm/xmlrpc</code>, <code>/api/xmlrpc</code>, <code>xmlrpc</code> client calls with <code>ContactService</code> or <code>DataService</code>, and the old Infusionsoft SDKs. The <a href="./#check">free check</a> flags these and counts the files.</p>
+
+<div class="stat"><p><b>Custom Keap or Infusionsoft code?</b></p><p>Send the free check's output for a scoped quote.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19440, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>
