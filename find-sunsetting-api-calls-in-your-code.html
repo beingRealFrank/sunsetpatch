@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self' https://gc.zgo.at; img-src 'self' https://sunsetpatch.goatcounter.com; connect-src 'self' https://sunsetpatch.goatcounter.com; base-uri 'none'">
+<title>How to find every sunsetting API call in your code: grep patterns for 2027 shutdowns</title>
+<meta name="description" content="Copy-paste grep commands to find Apple Ads v5, Google Custom Search, Exchange EWS, HubSpot and Keap XML-RPC calls in your repository before the 2027 deadlines.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/find-sunsetting-api-calls-in-your-code.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script data-goatcounter="https://sunsetpatch.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">Checklist</p>
+<h1>How to find every sunsetting API call in your code</h1>
+
+<p>Before you plan any migration, list every place your code talks to the old API. Run these from the repository root. They are plain text searches, so expect a few false positives in docs and tests. Check the dates on the <a href="api-shutdown-calendar-2027.html">shutdown calendar</a>.</p>
+<h2>Apple Ads Campaign Management API v5 (hard, January 26, 2027)</h2>
+<pre>grep -rnE "api\.searchads\.apple\.com|/api/v5|X-AP-Context|orgId" .</pre>
+<h2>Google Custom Search JSON API (hard, January 1, 2027)</h2>
+<pre>grep -rnE "googleapis\.com/customsearch|customsearch/v1|cx=|build\(.customsearch." .</pre>
+<h2>Exchange Online EWS (hard, April 1, 2027)</h2>
+<pre>grep -rniE "Exchange\.asmx|exchangelib|Microsoft\.Exchange\.WebServices|EWS/|ews\.office365|full_access_as_app" .</pre>
+<h2>HubSpot (soft)</h2>
+<pre>grep -rnE "api\.hubapi\.com/(crm/v3|crm/v4|contacts/v1)|hapikey=|@hubspot/api-client|hubspot-api-client" .</pre>
+<h2>Keap XML-RPC (soft)</h2>
+<pre>grep -rniE "infusionsoft\.com/(crm/)?xmlrpc|api/xmlrpc|ContactService|DataService" .</pre>
+<p>Also search your environment files, CI secrets names and cron jobs: the old calls often live in scripts nobody has opened for years. The <a href="./#check">free check</a> does all of the above in your browser, lists each call with its file and line, and nothing is uploaded.</p>
+
+<div class="stat"><p><b>Rather not grep?</b></p><p>The free check does this in your browser and lists file and line for each call.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19440, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>
