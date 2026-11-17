@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self' https://gc.zgo.at; img-src 'self' https://sunsetpatch.goatcounter.com; connect-src 'self' https://sunsetpatch.goatcounter.com; base-uri 'none'">
+<title>exchangelib and EWS Managed API to Microsoft Graph: what breaks April 1, 2027</title>
+<meta name="description" content="exchangelib (Python) and the EWS Managed API (.NET) stop working with Exchange Online when EWS is disabled on April 1, 2027. What to move to and what does not port.">
+<link rel="canonical" href="https://beingrealfrank.github.io/sunsetpatch/exchangelib-ews-managed-api-to-microsoft-graph.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script data-goatcounter="https://sunsetpatch.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+<header class="wrap top"><a class="brand" href="./">Sunsetpatch</a><nav><a href="./#check">Free check</a><a href="./#prices">Prices</a><a href="guides.html">Guides</a></nav></header>
+<main class="wrap">
+<p class="eyebrow">Exchange Online EWS · April 1, 2027</p>
+<h1>exchangelib and EWS Managed API stop working April 1, 2027</h1>
+
+<p>If your code reaches Exchange Online through <code>exchangelib</code> (Python) or the EWS Managed API (the .NET <code>Microsoft.Exchange.WebServices</code> package), it is an EWS client. Microsoft says EWS in Exchange Online is permanently disabled on April 1, 2027 (<a href="https://techcommunity.microsoft.com/blog/Exchange/exchange-online-ews-your-time-is-almost-up/4492361" rel="noopener">Exchange team blog</a>), so these libraries stop working against Microsoft 365 mailboxes on that date. On-premises Exchange Server is not affected.</p>
+<h2>What changes</h2>
+<table class="dates">
+<tr><th>Today</th><th>After</th></tr>
+<tr><td>Python <code>exchangelib</code> with <code>Account</code>, <code>Credentials</code> or OAuth2 to EWS</td><td>Microsoft Graph with the <code>msgraph-sdk</code> and <code>msal</code> packages, or plain HTTPS calls to <code>graph.microsoft.com</code></td></tr>
+<tr><td>.NET <code>ExchangeService</code> from <code>Microsoft.Exchange.WebServices</code></td><td><code>GraphServiceClient</code> from the <code>Microsoft.Graph</code> NuGet package</td></tr>
+<tr><td>Basic or impersonation access to many mailboxes</td><td>An Entra ID app registration with Graph application permissions, limited to the mailboxes it needs</td></tr>
+<tr><td><code>FindItems</code>, <code>account.inbox.all()</code></td><td><code>GET /users/{id}/mailFolders/inbox/messages</code> with <code>$filter</code> and <code>$top</code></td></tr>
+<tr><td><code>Message(...).send()</code></td><td><code>POST /users/{id}/sendMail</code></td></tr>
+<tr><td><code>CalendarItem</code> create and query</td><td><code>POST /users/{id}/events</code>, <code>GET /users/{id}/calendarView</code></td></tr>
+</table>
+<p>The full operation-by-operation mapping is Microsoft's own (aka.ms/ews2graphMap). Not every EWS feature has a Graph equivalent: the mapping lists known gaps, including generic public-folder and Microsoft 365 group mailbox operations that it says won't be added, so check any code that touches them first.</p>
+<h2>What does not port line by line</h2>
+<ul>
+<li><b>Permissions.</b> Graph asks for scopes such as <code>Mail.ReadWrite</code> or <code>Calendars.ReadWrite</code>. An app that impersonated a service account needs its access rethought, not renamed.</li>
+<li><b>Paging and sync.</b> EWS sync state and streaming notifications do not map to Graph one to one. Graph uses delta queries and change notifications.</li>
+<li><b>Identifiers.</b> Item IDs are different formats. If you stored EWS IDs, translate them with Graph's <code>translateExchangeIds</code> instead of assuming they match.</li>
+</ul>
+<h2>Do now</h2>
+<ol>
+<li>Find every caller: the <a href="find-sunsetting-api-calls-in-your-code.html">grep patterns</a> or the <a href="./#check">free check</a> list the files.</li>
+<li>Ask your admin whether EWS is already disabled in your tenant (disabling by default began in October 2026).</li>
+<li>Rebuild one flow end to end on Graph, then the rest.</li>
+</ol>
+
+<div class="stat"><p><b>EWS code to move?</b></p><p>Send the free check's output and we quote a fixed price, from $890, before any work starts.</p><p><a class="btn" href="./#check">Run the free check</a> <a class="btn ghost" href="./#prices">See fixed prices</a></p></div>
+</main>
+<footer class="wrap foot">Sunsetpatch · Frank Gilroy · 147 W Orvilla Rd, Hatfield, PA 19440, USA · <a href="terms.html">Terms</a><br>Not affiliated with or endorsed by Apple, Google, Microsoft, HubSpot or Keap. Dates are from the vendors' own pages, checked November 16, 2026.</footer>
+</body>
+</html>
